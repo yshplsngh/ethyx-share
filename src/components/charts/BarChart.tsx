@@ -4,24 +4,26 @@ import { isWindowAvailable } from 'utils/navigation'
 import { ChartProps, ChartState } from './LineAreaChart'
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
-class ColumnChart extends React.Component<ChartProps, ChartState> {
+class ColumnChart extends React.Component<ChartProps, ChartState & { isMounted: boolean }> {
   constructor (props: ChartState) {
     super(props)
     this.state = {
       chartData: [],
-      chartOptions: {}
+      chartOptions: {},
+      isMounted: false
     }
   }
 
   componentDidMount () {
     this.setState({
       chartData: this.props.chartData,
-      chartOptions: this.props.chartOptions
+      chartOptions: this.props.chartOptions,
+      isMounted: true
     })
   }
 
   render () {
-    if (!isWindowAvailable()) return <></>
+    if (!this.state.isMounted) return <></>
 
     return (
       <Chart
